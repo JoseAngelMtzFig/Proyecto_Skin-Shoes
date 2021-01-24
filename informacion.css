@@ -1,0 +1,33 @@
+#informacion{
+	background:#333;
+	color:#fff;
+	text-align:center;  
+	padding: 20px;
+}
+
+#informacion .contenedor{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content:center; 
+}
+
+
+
+.informacion-ayuda{
+	margin: 20px;
+}
+
+.informacion-ayuda img{
+	width:180px;
+	height:180px;
+	border-radius:50%;
+	border: 5px solid #fff;   
+}
+
+@media (min-width: 1024px){
+	.informacion-ayuda{
+		width:auto;
+
+	}
+
+}

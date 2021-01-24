@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Carrito</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+
+
+    <link rel="stylesheet" href="carrito.css">
+    <script>
+
+
+
+
+
+
+
+        window.onload = function () {
+            // Variables
+            let baseDeDatos = [
+                {
+                    id: 1,
+                    nombre: 'Zapatos de piel',
+                    precio: 1900,
+                    imagen: 'img/cuero.jpg'
+                },
+                {
+                    id: 2,
+                    nombre: 'Zapatos de botin',
+                    precio: 900,
+                    imagen: 'img/botin.jpg'
+
+                },
+                {
+                    id: 3,
+                    nombre: 'tenis artesanales',
+                    precio: 800,
+                    imagen: 'img/artesanales.jpg'
+                },
+                {
+                    id: 4,
+                    nombre: 'tenis bordados',
+                    precio: 1200,
+                    imagen: 'img/bordados.jpg'
+                },
+                {
+                    id: 5,
+                    nombre: 'Edicion dragon recuerdo acapulco',
+                    precio: 2100,
+                    imagen: 'img/dragon.jpg'
+                },
+                {
+                    id: 6,
+                    nombre: 'Trivaleras 2012 sensacion del momento',
+                    precio: 1300,
+                    imagen: 'img/Trivaleras.jpg'
+                }
+
+            ];
+            
+            let $items = document.querySelector('#items');
+            let carrito = [];
+            let total = 0;
+            let $carrito = document.querySelector('#carrito');
+            let $total = document.querySelector('#total');
+            let $botonVaciar = document.querySelector('#boton-vaciar');
+
+            // Funciones
+            function renderItems() {
+                for (let info of baseDeDatos) {
+                    // Estructura
+                    let miNodo = document.createElement('div');
+                    miNodo.classList.add('card', 'col-sm-4');
+                    // Body
+                    let miNodoCardBody = document.createElement('div');
+                    miNodoCardBody.classList.add('card-body');
+                    // Titulo
+                    let miNodoTitle = document.createElement('h5');
+                    miNodoTitle.classList.add('card-title');
+                    miNodoTitle.textContent = info['nombre'];
+                    // Imagen
+                    let miNodoImagen = document.createElement('img');
+                    miNodoImagen.classList.add('img-fluid');
+                    miNodoImagen.setAttribute('src', info['imagen']);
+                    // Precio
+                    let miNodoPrecio = document.createElement('p');
+                    miNodoPrecio.classList.add('card-text');
+                    miNodoPrecio.textContent = info['precio'] + '--pesos';
+                    // Boton 
+                    let miNodoBoton = document.createElement('button');
+                    miNodoBoton.classList.add('btn', 'btn-primary');
+                    miNodoBoton.textContent = '+';
+                    miNodoBoton.setAttribute('marcador', info['id']);
+                    miNodoBoton.addEventListener('click', anyadirCarrito);
+                    // Insertamos
+                    miNodoCardBody.appendChild(miNodoImagen);
+                    miNodoCardBody.appendChild(miNodoTitle);
+                    miNodoCardBody.appendChild(miNodoPrecio);
+                    miNodoCardBody.appendChild(miNodoBoton);
+                    miNodo.appendChild(miNodoCardBody);
+                    $items.appendChild(miNodo);
+                }
+            }
+
+            function anyadirCarrito () {
+                // Anyadimos el Nodo a nuestro carrito
+                carrito.push(this.getAttribute('marcador'))
+                // Calculo el total
+                calcularTotal();
+                // Renderizamos el carrito 
+                renderizarCarrito();
+            }
+
+            function renderizarCarrito() {
+                // Vaciamos todo el html
+                $carrito.textContent = '';
+                // Quitamos los duplicados
+                let carritoSinDuplicados = [...new Set(carrito)];
+                // Generamos los Nodos a partir de carrito
+                carritoSinDuplicados.forEach(function (item, indice) {
+                    // Obtenemos el item que necesitamos de la variable base de datos
+                    let miItem = baseDeDatos.filter(function(itemBaseDatos) {
+                        return itemBaseDatos['id'] == item;
+                    });
+                    // Cuenta el número de veces que se repite el producto
+                    let numeroUnidadesItem = carrito.reduce(function (total, itemId) {
+                        return itemId === item ? total += 1 : total;
+                    }, 0);
+                    // Creamos el nodo del item del carrito
+                    let miNodo = document.createElement('li');
+                    miNodo.classList.add('list-group-item', 'text-right', 'mx-2');
+                    miNodo.textContent = `${numeroUnidadesItem} x ${miItem[0]['nombre']} - ${miItem[0]['precio']}--pesos`;
+                    // Boton de borrar
+                    let miBoton = document.createElement('button');
+                    miBoton.classList.add('btn', 'btn-danger', 'mx-5');
+                    miBoton.textContent = 'X';
+                    miBoton.style.marginLeft = '1rem';
+                    miBoton.setAttribute('item', item);
+                    miBoton.addEventListener('click', borrarItemCarrito);
+                    // Mezclamos nodos
+                    miNodo.appendChild(miBoton);
+                    $carrito.appendChild(miNodo);
+                });
+            }
+
+            function borrarItemCarrito() {
+                // Obtenemos el producto ID que hay en el boton pulsado
+                let id = this.getAttribute('item');
+                // Borramos todos los productos
+                carrito = carrito.filter(function (carritoId) {
+                    return carritoId !== id;
+                });
+                // volvemos a renderizar
+                renderizarCarrito();
+                // Calculamos de nuevo el precio
+                calcularTotal();
+            }
+
+            function calcularTotal() {
+                // Limpiamos precio anterior
+                total = 0;
+                // Recorremos el array del carrito
+                for (let item of carrito) {
+                    // De cada elemento obtenemos su precio
+                    let miItem = baseDeDatos.filter(function(itemBaseDatos) {
+                        return itemBaseDatos['id'] == item;
+                    });
+                    total = total + miItem[0]['precio'];
+                }
+                // Formateamos el total para que solo tenga dos decimales
+                let totalDosDecimales = total.toFixed(2);
+                // Renderizamos el precio en el HTML
+                $total.textContent = totalDosDecimales;
+            }
+
+            function vaciarCarrito() {
+                // Limpiamos los productos guardados
+                carrito = [];
+                // Renderizamos los cambios
+                renderizarCarrito();
+                calcularTotal();
+            }
+
+            // Eventos
+            $botonVaciar.addEventListener('click', vaciarCarrito);
+
+
+
+            // Inicio
+            renderItems();
+        } 
+    </script>
+</head>
+<body>
+    <br>
+    <br>
+    <br>
+    <div class="container">
+        <div class="row">
+            <!-- Elementos generados a partir del JSON -->
+            <main id="items" class="col-sm-8 row"></main>
+            <!-- Carrito -->
+            <aside class="col-sm-4">
+
+<header>
+                <div class="contenedor">
+                <h2>Carrito</h2><img class="icono-logo" src="img\logo_nuevo.jpg">
+                
+
+                </div>
+                </header>
+
+                <!-- Elementos del carrito -->
+                <ul id="carrito" class="list-group"></ul>
+                <hr>
+                <!-- Precio total -->
+                <p class="text-right">Total: <span id="total"></span>--pesos</p>
+                <button id="boton-vaciar" class="btn btn-danger">Vaciar</button>
+               <a href="ventana.html"><button id="boton-compra" class="btn btn danger">Comprar</button></a>
+
+
+
+
+
+
+
+                
+                    <br>
+                       <br>
+                       <h2>Comparar precios
+                          <br>
+
+
+
+        <FORM method=GET action="http://www.google.es/search">
+    <fieldset>
+        <input type=hidden name=ie value=UTF-8 />
+        <input type=hidden name=oe value=UTF-8 />
+                        
+        <INPUT TYPE=text id="s" name="q" value="" size="30"/>
+        <font size=-1>
+                        
+        <input type=hidden name=domains value="http://www.uterra.com" /><br>
+        <input type=radio name=sitesearch value="" /> En todo Internet</br>
+        <input type=radio name=sitesearch value="http://www.uterra.com" checked />Yahoo
+                        
+        <INPUT type=submit  id="x" name=btnG VALUE="Buscar" />
+
+
+        <a href="#openModal">Lanzar el modal</a>
+
+
+
+
+
+
+
+        </font>
+    </fieldset>
+    </FORM>
+
+    </h2>
+            </aside>
+        </div>
+
+
+
+
+    </div>
+</body>
+</html>
+

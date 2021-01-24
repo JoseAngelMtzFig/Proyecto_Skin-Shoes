@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+
+body{
+
+font-family: 'Open Sans', sans-serif;
+
+}
+
+header{
+	width:100%;
+	height:50px;  
+	background: #333;
+
+	position:fixed;
+	top:0;
+	left:0;  
+	z-index: 100;  
+
+}
+
+
+*{
+margin:0;
+padding:0;
+box-sizing: border-box;   
+}
+
+.contenedor{
+	width:98%;
+	margin:auto;  
+}
+
+.contenedor h1{
+color: #fff;
+float:left;
+
+
+}
+
+.icono-logo{
+	width:50px;
+	height:50px;  
+}
+
+.icono-menu{
+	width:28px;
+	height:28px;
+	
+
+}
+.contenedor header{
+	display: table;
+}
+
+.icono-menu img{
+	height: 30px;
+	width: 30px;
+}
+
+section{
+	width: 100%;
+	margin-bottom: 25px;
+}
+
+#bienvenidos{
+	text-align: center;
+}
+
+#producto article{
+margin: 15px; 
+
+}
+
+#producto img{
+	width:300px;
+	height:200px;  
+}
+
+#producto img:hover{
+background-color:#333;
+ padding: 5px;
+ transition: all 0.5s;
+}
+
+
+#producto h3{
+	color:#333; 
+	text-decoration:none;
+    text-align: center;
+
+
+}
+
+#producto .contenedor{
+	display: flex;
+	justify-content: center; 
+	
+}
+
+footer .contenedor{
+	display:flex;
+	flex-wrap: wrap;
+	justify-content:center; 
+	padding-bottom: 25px;
+
+}
+
+
+.copiar{
+	font-size: 20px;
+}
+
+.redes {
+	width: 100%
+	font-size:28px;
+	text-align: center;
+
+	
+}
+
+.redes a{
+
+color: #333;
+text-decoration:none;
+
+}
+
+.redes img{
+	height:30px; 
+	width:30px; 
+}
+
+@media (min-width:768px ){
+.redes{
+	width: auto;
+}
+
+}
+
+
+
+@media (min-width:1024px){
+	.contenedor{
+		width:1000px; 
+
+	}
+
+  
+
+}
+
